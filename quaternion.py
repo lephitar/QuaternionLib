@@ -86,6 +86,13 @@ class Quaternion:
         angle = 2 * np.arccos(np.clip(dot_product, -1.0, 1.0))
         return angle
 
+    def __eq__(self, other):
+        return self.w == other.w and \
+               self.x == other.x and \
+               self.y == other.y and \
+               self.z == other.z
+
+
 def read_json_points(file_path):
     with open(file_path, "r") as file:
         point_data = json.load(file)
