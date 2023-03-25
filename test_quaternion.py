@@ -17,7 +17,7 @@ class TestQuaternion(unittest.TestCase):
         self.assertEqual(result, 32)
 
     def test_cross_product(self):
-        q1 = Quaternion(0,1, 2, 3)
+        q1 = Quaternion(0, 1, 2, 3)
         q2 = Quaternion(0, 4, 5, 6)
         result = q1.cross_product(q2)
         self.assertEqual(result, Quaternion(0, -3, 6, -3))
@@ -35,9 +35,6 @@ class TestQuaternion(unittest.TestCase):
 
         slerp = Quaternion.slerp(q1, q2, 0.2)
         expected_slerp = Quaternion(0.951056516295154, 0.309016994374947, 0.0, 0.0)
-        print("OK")
-        print(slerp)
-        print(expected_slerp)
         self.assertAlmostEqual(slerp.w, expected_slerp.w)
         self.assertAlmostEqual(slerp.x, expected_slerp.x)
         self.assertAlmostEqual(slerp.y, expected_slerp.y)

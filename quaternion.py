@@ -49,9 +49,8 @@ class Quaternion:
         return np.sqrt(self.w**2 + self.x**2 + self.y**2 + self.z**2)
 
     def rotate(self, vec):
-        vec_quat = Quaternion.from_vector(vec)
-        rotated_vec = self.multiply(vec_quat).multiply(self.conjugate())
-        return np.array([rotated_vec.x, rotated_vec.y, rotated_vec.z])
+        rotated_vec = self.multiply(vec).multiply(self.conjugate())
+        return rotated_vec
 
     def dot_product(self, other):
         return self.w * other.w + self.x * other.x + self.y * other.y + self.z * other.z
@@ -114,15 +113,15 @@ def main():
     point_data = read_json_points(input_file)
     processed_points = []
 
-    rotation_quaternion = Quaternion(0, 1, 0, 0)  # Example quaternion for rotation
+    rotation_quaternion = Quaternion.from_axis_angle([0, 1, 0], np.pi/3)  # Example quaternion for rotation
 
     for point in point_data:
-        input_vec = np.array([point['x'], point['y'], point['z']])
+        input_vec = Quaternion(0, point['x'], point['y'], point['z'])
         rotated_vec = rotation_quaternion.rotate(input_vec)
         processed_points.append({
-            'x': rotated_vec[0],
-            'y': rotated_vec[1],
-            'z': rotated_vec[2]
+            'x': rotated_vec.x,
+            'y': rotated_vec.y,
+            'z': rotated_vec.z
         })
 
     # Write processed points to JSON file
