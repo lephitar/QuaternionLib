@@ -32,7 +32,7 @@ class TestLine(unittest.TestCase):
         line = Line(Quaternion(0, 1, 1, 1), Quaternion(0, 1, 0, 0))
         point = Quaternion(0, 4, 4, 4)
         result = line.shortest_distance_to_point(point)
-        self.assertAlmostEqual(result, np.sqrt(27))
+        self.assertAlmostEqual(result, np.sqrt(18))         # chatGPT tested for 27
 
 
 class TestPlane(unittest.TestCase):
@@ -46,14 +46,17 @@ class TestPlane(unittest.TestCase):
         self.assertAlmostEqual(result, 2)  # The point is 2 units above the plane in the z-direction
 
     def test_project_point_onto_plane(self):
-        plane = Plane(Quaternion(0, 1, 1, 1), Quaternion(0, 1, 1, 1))
+        point_on_plane = Quaternion(0, 0, 0, 0)
+        plane_normal = Quaternion(0, 0, 0, 1)   # chatGPT exchanged y and z in the test and normal
+        plane = Plane(point_on_plane, plane_normal)
+
         point = Quaternion(0, 2, 2, 2)
-        result = plane.project_point_onto_plane(point)
-        expected_result = Quaternion(0, 4/3, 4/3, 4/3)
-        self.assertAlmostEqual(result.w, expected_result.w)
-        self.assertAlmostEqual(result.x, expected_result.x)
-        self.assertAlmostEqual(result.y, expected_result.y)
-        self.assertAlmostEqual(result.z, expected_result.z)
+        projected_point = plane.project_point_onto_plane(point)
+
+        self.assertAlmostEqual(projected_point.w, 0, "w")  # Real part (w) should be zero
+        self.assertAlmostEqual(projected_point.x, 2, "x")  # X-coordinate should remain the same
+        self.assertAlmostEqual(projected_point.y, 2, "y")  # Y-coordinate should remain the same
+        self.assertAlmostEqual(projected_point.z, 0, "z")  # Z-coordinate should be projected onto the plane (z=0)
 
     def test_line_plane_intersection(self):
         point_on_line = Quaternion(0, 1, 1, 1)
@@ -70,10 +73,10 @@ class TestPlane(unittest.TestCase):
         # Check if the intersection point lies on both the line and the plane
         t = line_direction.dot_product(intersection.subtract(point_on_line)) / line_direction.dot_product(line_direction)
         line_point = line.point_at(t)
-        self.assertAlmostEqual(line_point.w, intersection.w)
-        self.assertAlmostEqual(line_point.x, intersection.x)
-        self.assertAlmostEqual(line_point.y, intersection.y)
-        self.assertAlmostEqual(line_point.z, intersection.z)
+        self.assertAlmostEqual(line_point.w, intersection.w, "w")
+        self.assertAlmostEqual(line_point.x, intersection.x, "x")
+        self.assertAlmostEqual(line_point.y, intersection.y, "y")
+        self.assertAlmostEqual(line_point.z, intersection.z, "z")
 
 
 if __name__ == '__main__':
