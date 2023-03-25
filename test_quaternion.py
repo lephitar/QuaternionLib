@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 from quaternion import Quaternion, Line, Plane
+from typing import TypeVar, Union
 
 class TestQuaternion(unittest.TestCase):
     def test_add(self):
@@ -36,10 +37,13 @@ class TestLine(unittest.TestCase):
 
 class TestPlane(unittest.TestCase):
     def test_signed_distance_to_point(self):
-        plane = Plane(Quaternion(0, 1, 1, 1), Quaternion(0, 1, 1, 1))
+        point_on_plane = Quaternion(0, 0, 0, 0)
+        plane_normal = Quaternion(0, 0, 1, 0)
+        plane = Plane(point_on_plane, plane_normal)
+
         point = Quaternion(0, 2, 2, 2)
         result = plane.signed_distance_to_point(point)
-        self.assertAlmostEqual(result, 1 / np.sqrt(3))
+        self.assertAlmostEqual(result, 2)  # The point is 2 units above the plane in the z-direction
 
     def test_project_point_onto_plane(self):
         plane = Plane(Quaternion(0, 1, 1, 1), Quaternion(0, 1, 1, 1))
@@ -50,6 +54,27 @@ class TestPlane(unittest.TestCase):
         self.assertAlmostEqual(result.x, expected_result.x)
         self.assertAlmostEqual(result.y, expected_result.y)
         self.assertAlmostEqual(result.z, expected_result.z)
+
+    def test_line_plane_intersection(self):
+        point_on_line = Quaternion(0, 1, 1, 1)
+        line_direction = Quaternion(0, 1, 0, 0)
+        line = Line(point_on_line, line_direction)
+
+        point_on_plane = Quaternion(0, 0, 0, 0)
+        plane_normal = Quaternion(0, 1, 1, 1)
+        plane = Plane(point_on_plane, plane_normal)
+
+        intersection = plane.line_intersection(line)
+        self.assertIsNotNone(intersection)
+
+        # Check if the intersection point lies on both the line and the plane
+        t = line_direction.dot_product(intersection.subtract(point_on_line)) / line_direction.dot_product(line_direction)
+        line_point = line.point_at(t)
+        self.assertAlmostEqual(line_point.w, intersection.w)
+        self.assertAlmostEqual(line_point.x, intersection.x)
+        self.assertAlmostEqual(line_point.y, intersection.y)
+        self.assertAlmostEqual(line_point.z, intersection.z)
+
 
 if __name__ == '__main__':
     unittest.main()

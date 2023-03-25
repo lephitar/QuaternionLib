@@ -1,6 +1,6 @@
 import json
 import numpy as np
-from typing import TypeVar
+from typing import TypeVar, Union
 
 L = TypeVar("L", bound="Line")
 P = TypeVar("P", bound="Plane")
@@ -163,3 +163,11 @@ class Plane:
         signed_distance = plane.signed_distance_to_point(point)
         reflection_vector = plane.normal.scalar_multiply(2 * signed_distance)
         return point.subtract(reflection_vector)
+
+    def line_intersection(self, line: L) -> Union[Quaternion, None]:
+        line_direction_dot_normal = line.direction.dot_product(self.normal)
+        if abs(line_direction_dot_normal) < 1e-6:  # Line is parallel to the plane
+            return None
+        t = self.signed_distance_to_point(line.point) / line_direction_dot_normal
+        intersection_point = line.point_at(-t)
+        return intersection_point
