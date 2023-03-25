@@ -22,6 +22,35 @@ class TestQuaternion(unittest.TestCase):
         result = q1.cross_product(q2)
         self.assertEqual(result, Quaternion(0, -3, 6, -3))
 
+    def test_slerp(self):
+        q1 = Quaternion(1, 0, 0, 0)
+        q2 = Quaternion(0, 1, 0, 0)
+
+        slerp = Quaternion.slerp(q1, q2, 0.0)
+        expected_slerp = q1
+        self.assertAlmostEqual(slerp.w, expected_slerp.w, "w")
+        self.assertAlmostEqual(slerp.x, expected_slerp.x, "x")
+        self.assertAlmostEqual(slerp.y, expected_slerp.y, "y")
+        self.assertAlmostEqual(slerp.z, expected_slerp.z, "z")
+
+        slerp = Quaternion.slerp(q1, q2, 0.2)
+        expected_slerp = Quaternion(0.951056516295154, 0.309016994374947, 0.0, 0.0)
+        print("OK")
+        print(slerp)
+        print(expected_slerp)
+        self.assertAlmostEqual(slerp.w, expected_slerp.w)
+        self.assertAlmostEqual(slerp.x, expected_slerp.x)
+        self.assertAlmostEqual(slerp.y, expected_slerp.y)
+        self.assertAlmostEqual(slerp.z, expected_slerp.z)
+
+        slerp = Quaternion.slerp(q1, q2, 0.4)
+        expected_slerp = Quaternion(0.809016994374947, 0.587785252292473, 0.0, 0.0)
+        self.assertAlmostEqual(slerp.w, expected_slerp.w)
+        self.assertAlmostEqual(slerp.x, expected_slerp.x)
+        self.assertAlmostEqual(slerp.y, expected_slerp.y)
+        self.assertAlmostEqual(slerp.z, expected_slerp.z)
+
+
 class TestLine(unittest.TestCase):
     def test_point_at(self):
         line = Line(Quaternion(0, 1, 1, 1), Quaternion(0, 1, 0, 0))

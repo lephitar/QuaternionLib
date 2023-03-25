@@ -81,12 +81,18 @@ class Quaternion:
 
         return Quaternion(q1.w * ratio_a + q2.w * ratio_b, q1.x * ratio_a + q2.x * ratio_b,q1.y * ratio_a + q2.y * ratio_b, q1.z * ratio_a + q2.z * ratio_b)
 
-    def angle_between_quaternions(q1, q2):
+    def angle_between_quaternions(q1, q2) -> float:
         dot_product = q1.dot_product(q2)
         angle = 2 * np.arccos(np.clip(dot_product, -1.0, 1.0))
         return angle
 
-    def __eq__(self, other):
+    def from_axis_angle(axis: [float], angle: float) -> 'Quaternion':
+        norm = np.sqrt(sum([x**2 for x in axis]))
+        s = np.sin(angle/2) / norm
+        c = np.cos(angle/2)
+        return Quaternion(c, axis[0]*s, axis[1]*s, axis[2]*s)
+
+    def __eq__(self, other) -> bool:
         return self.w == other.w and \
                self.x == other.x and \
                self.y == other.y and \
