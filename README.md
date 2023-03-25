@@ -13,4 +13,4 @@ Contains 3 classes:
 chatGPT was graceful enough to write unit tests.
 Trying to figure out how to have chatGPT add coverage test.
 
-This led me to learn about [Rotors](https://en.wikipedia.org/wiki/Rotor_(mathematics). 
+This led me to learn about [Rotors](https://en.wikipedia.org/wiki/Rotor_(mathematics).)
